@@ -2,14 +2,33 @@ import type { Metadata } from "next";
 import { Nunito as FontSans } from "next/font/google";
 import "@/styles/globals.css";
 
+import { SiteFooter } from "@/components/site-footer";
+import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from '@/components/theme-provider';
+
+import { siteConfig } from '@/config/site';
+
 import { cn } from "@/lib/utils";
 
 const fontSans = FontSans({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
-  title: "Manga Otaku",
-  description: "An opinionated Manga Reader",
+  title: {
+    default: siteConfig.name,
+    template: `%s - ${siteConfig.name}`,
+  },
+  metadataBase: new URL(siteConfig.url),
+  description: siteConfig.description,
+  keywords: [
+    'Manga',
+    'Reader',
+  ],
+  authors: [
+    {
+      name: 'zweer',
+    }
+  ],
+  creator: 'zweer',
 };
 
 export default function RootLayout({
@@ -24,7 +43,13 @@ export default function RootLayout({
           fontSans.variable
         )}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
+          <div vaul-drawer-wrapper="">
+            <div className="relative flex min-h-screen flex-col bg-background">
+              <SiteHeader />
+                <main className="flex-1">{children}</main>
+              <SiteFooter />
+            </div>
+          </div>
         </ThemeProvider>
       </body>
     </html>
