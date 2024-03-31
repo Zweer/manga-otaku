@@ -11,6 +11,10 @@ export const menuConfig: MenuConfig = [
     href: '/latest',
   },
   {
+    label: 'Connectors',
+    href: '/connectors',
+  },
+  {
     label: 'Browse',
     href: '/browse',
   },

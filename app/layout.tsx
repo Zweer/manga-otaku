@@ -46,7 +46,13 @@ export default function RootLayout({
           <div vaul-drawer-wrapper="">
             <div className="relative flex min-h-screen flex-col bg-background">
               <SiteHeader />
-                <main className="flex-1">{children}</main>
+                <main className="flex-1">
+                  <div className="container relative">
+                    <main className="relative py-6 lg:py-8">
+                      {children}
+                    </main>
+                  </div>
+                </main>
               <SiteFooter />
             </div>
           </div>
