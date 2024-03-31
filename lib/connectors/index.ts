@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { Manga, MangaWithChapters } from '../models/manga';
+
+import { Manga, MangaWithChapters } from '@/db/models/manga';
 
 export abstract class Connector {
   protected request = axios.create();

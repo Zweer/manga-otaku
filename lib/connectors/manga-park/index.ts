@@ -1,11 +1,13 @@
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 import axios from 'axios';
 
+import { Manga, MangaWithChapters } from '@/db/models/manga';
+
 import { Connector } from '..';
-import { Manga, MangaWithChapters } from '../../models/manga';
+
 import { MangaParkGetMangas } from './interfaces/getMangas';
-import { join } from 'node:path';
 import { MangaParkGetManga } from './interfaces/getManga';
 
 export class MangaParkConnector extends Connector {
@@ -41,6 +43,7 @@ export class MangaParkConnector extends Connector {
       const { data } = await this.request.post<MangaParkGetMangas>('apo/', { operationName, query, variables });
 
       mangas.push(...data.data.get_searchComic.items.map((manga) => ({
+        id: manga.data.id,
         title: manga.data.name!,
         abstract: manga.data.summary,
         image: manga.data.urlCoverOri,
@@ -69,6 +72,7 @@ export class MangaParkConnector extends Connector {
     const { data } = await this.request.post<MangaParkGetManga>('apo/', { operationName, query, variables });
 
     const manga: MangaWithChapters = {
+      id: data.data.get_comicNode.data.id,
       title: data.data.get_comicNode.data.name!,
       abstract: data.data.get_comicNode.data.summary,
       image: data.data.get_comicNode.data.urlCoverOri,

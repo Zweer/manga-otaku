@@ -2,7 +2,7 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 
-import { Manga } from '@/lib/models/manga';
+import { Manga } from '@/db/models/manga';
 
 export const columns: ColumnDef<Manga>[] = [
   {

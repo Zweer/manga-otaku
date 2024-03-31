@@ -1,6 +1,6 @@
 'use client';
 
-import { useLiveQuery } from "dexie-react-hooks";
+import { useLiveQuery } from 'dexie-react-hooks';
 import { AlertCircle } from 'lucide-react'
 import Link from 'next/link';
 
@@ -10,10 +10,10 @@ import {
   AlertTitle,
 } from '@/components/ui/alert';
 
-import { db } from '@/db/db.model';
+import { db } from '@/db';
 
-import { columns } from "./columns";
-import { DataTable } from "./data-table";
+import { columns } from './columns';
+import { DataTable } from './data-table';
 
 export default function Browse() {
   const mangas = useLiveQuery(() => db.mangas.toArray());
