@@ -1,0 +1,38 @@
+query getManga($getComicNodeId: ID!, $comicId: ID!) {
+  get_comicNode(id: $getComicNodeId) {
+    data {
+      artists
+      authors
+      chaps_normal
+      chaps_others
+      dateCreate
+      extraInfo
+      genres
+      id
+      name
+      originalStatus
+      score_avg
+      sfw_result
+      slug
+      summary
+      urlCover300
+      urlCover600
+      urlCover900
+      urlCoverOri
+      urlPath
+    }
+  }
+  get_comicChapterList(comicId: $comicId) {
+    data {
+      dateCreate
+      dname
+      imageFile {
+        urlList
+      }
+      serial
+      sfw_result
+      title
+      urlPath
+    }
+  }
+}
