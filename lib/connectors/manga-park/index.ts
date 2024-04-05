@@ -1,6 +1,3 @@
-import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-
 import axios from 'axios';
 
 import { Manga, MangaWithChapters } from '@/db/models/manga';
@@ -9,6 +6,61 @@ import { Connector } from '..';
 
 import { MangaParkGetMangas } from './interfaces/getMangas';
 import { MangaParkGetManga } from './interfaces/getManga';
+
+const mangaDataGraphql = `
+data {
+  artists
+  authors
+  chaps_normal
+  chaps_others
+  dateCreate
+  extraInfo
+  genres
+  id
+  name
+  originalStatus
+  score_avg
+  sfw_result
+  slug
+  summary
+  urlCover300
+  urlCover600
+  urlCover900
+  urlCoverOri
+  urlPath
+}
+`;
+
+const getMangasGraphql = `
+query getMangas($select: SearchComic_Select) {
+  get_searchComic(select: $select) {
+    paging {
+      page
+      pages
+    }
+    items { ${mangaDataGraphql} }
+  }
+}
+`;
+
+const getMangaGraphql = `
+query getManga($getComicNodeId: ID!, $comicId: ID!) {
+  get_comicNode(id: $getComicNodeId) { ${mangaDataGraphql} }
+  get_comicChapterList(comicId: $comicId) {
+    data {
+      dateCreate
+      dname
+      imageFile {
+        urlList
+      }
+      serial
+      sfw_result
+      title
+      urlPath
+    }
+  }
+}
+`;
 
 export class MangaParkConnector extends Connector {
   static BASE_URL = 'https://mangapark.net';
@@ -29,11 +81,11 @@ export class MangaParkConnector extends Connector {
   async getMangas(): Promise<Manga[]> {
     const mangas: Manga[] = [];
     const operationName = 'getMangas';
-    const query = readFileSync(join(__dirname, 'graphql', 'getMangas.graphql'), { encoding: 'utf8' });
+    const query = getMangasGraphql;
     const variables = {
       select: {
         page: 0,
-        size: 1,
+        size: 1000,
       },
     };
 
@@ -55,7 +107,9 @@ export class MangaParkConnector extends Connector {
         chaptersCount: (manga.data.chaps_normal ?? 0) + (manga.data.chaps_others ?? 0),
       })));
 
-      run = page > data.data.get_searchComic.paging.pages;
+      console.log(page, data.data.get_searchComic.paging.pages);
+
+      run = page < data.data.get_searchComic.paging.pages;
     }
 
     return mangas;
@@ -63,7 +117,7 @@ export class MangaParkConnector extends Connector {
 
   async getManga(id: string): Promise<MangaWithChapters> {
     const operationName = 'getManga';
-    const query = readFileSync(join(__dirname, 'graphql', 'getManga.graphql'), { encoding: 'utf8' });
+    const query = getMangaGraphql;
     const variables = {
       getComicNodeId: id,
       comicId: id,
