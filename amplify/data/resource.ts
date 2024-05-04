@@ -26,11 +26,11 @@ const schema = a.schema({
       isFinished: a.boolean(),
       genres: a.string().array(),
       vote: a.float(),
-      chapters: a.hasMany('Chapter'),
+      chapters: a.hasMany('Chapter', 'mangaId'),
       chaptersCount: a.integer().required(),
-      packs: a.manyToMany('Pack', { relationName: 'MangaPacks' }),
+      packs: a.hasMany('MangaPack', 'mangaId'),
     })
-    .authorization([a.allow.public()]),
+    .authorization(allow => [allow.publicApiKey()]),
 
   Chapter: a
     .model({
@@ -38,16 +38,26 @@ const schema = a.schema({
       index: a.integer().required(),
       url: a.url().required(),
       releasedAt: a.datetime().required(),
-      manga: a.belongsTo('Manga'),
+      mangaId: a.id(),
+      manga: a.belongsTo('Manga', 'mangaId'),
     })
-    .authorization([a.allow.public()]),
+    .authorization(allow => [allow.publicApiKey()]),
 
   Pack: a
     .model({
       name: a.string().required(),
-      mangas: a.manyToMany('Manga', { relationName: 'MangaPacks' }),
+      mangas: a.hasMany('MangaPack', 'packId'),
     })
-    .authorization([a.allow.owner(), a.allow.public().to(['read'])]),
+    .authorization(allow => [allow.owner(), allow.publicApiKey().to(['read'])]),
+
+  MangaPack: a
+    .model({
+      mangaId: a.id().required(),
+      packId: a.id().required(),
+      manga: a.belongsTo('Manga', 'mangaId'),
+      pack: a.belongsTo('Pack', 'packId'),
+    })
+    .authorization(allow => [allow.publicApiKey()]),
 });
 
 export type Schema = ClientSchema<typeof schema>;

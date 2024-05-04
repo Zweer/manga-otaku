@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Nunito as FontSans } from "next/font/google";
 import "@/styles/globals.css";
 
+import { Auth } from "@/components/configure-amplify-auth";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { ThemeProvider } from '@/components/theme-provider';
@@ -42,15 +43,17 @@ export default function RootLayout({
           "min-h-screen bg-background font-sans antialiased",
           fontSans.variable
         )}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <div vaul-drawer-wrapper="">
-            <div className="relative flex min-h-screen flex-col bg-background">
-              <SiteHeader />
-                <main className="flex-1">{children}</main>
-              <SiteFooter />
+        <Auth>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <div vaul-drawer-wrapper="">
+              <div className="relative flex min-h-screen flex-col bg-background">
+                <SiteHeader />
+                  <main className="flex-1">{children}</main>
+                <SiteFooter />
+              </div>
             </div>
-          </div>
-        </ThemeProvider>
+          </ThemeProvider>
+        </Auth>
       </body>
     </html>
   );
