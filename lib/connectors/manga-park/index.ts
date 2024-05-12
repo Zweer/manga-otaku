@@ -78,7 +78,7 @@ export class MangaParkConnector extends Connector {
     });
   }
 
-  async getMangas(): Promise<Manga[]> {
+  async getMangas(word?: string): Promise<Manga[]> {
     const mangas: Manga[] = [];
     const operationName = 'getMangas';
     const query = getMangasGraphql;
@@ -86,6 +86,7 @@ export class MangaParkConnector extends Connector {
       select: {
         page: 0,
         size: 1000,
+        word,
       },
     };
 
